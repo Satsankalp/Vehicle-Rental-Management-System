@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Vehicles')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+
+<main class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0"><i class="bi bi-car-front me-2"></i>Vehicles</h1>
+        <div class="btn-group">
+            <a class="btn btn-sm btn-outline-secondary" href="/vehicles">All</a>
+            <a class="btn btn-sm btn-outline-success" href="/vehicles?view=available">Available only</a>
+        </div>
+    </div>
+
+    <form class="row g-2 mb-3" method="get" action="/vehicles">
+        <div class="col-md-6">
+            <input class="form-control" type="search" name="q" placeholder="Search make, model or type..."
+                   th:value="${param.q}">
+        </div>
+        <div class="col-auto"><button class="btn btn-primary"><i class="bi bi-search me-1"></i>Search</button></div>
+    </form>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white" th:text="${filter}">All vehicles</div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead><tr><th>ID</th><th>Type</th><th>Make / Model</th><th>Rate/day</th><th>Status</th><th></th></tr></thead>
+                        <tbody>
+                        <tr th:each="v : ${vehicles}">
+                            <td th:text="${v.code}"></td>
+                            <td><span class="badge bg-secondary" th:text="${v.type}"></span></td>
+                            <td><strong th:text="${v.make}"></strong> <span th:text="${v.model}"></span></td>
+                            <td th:text="${#numbers.formatDecimal(v.dailyRate, 1, 2)}"></td>
+                            <td>
+                                <span class="badge" th:classappend="${v.available} ? 'bg-success' : 'bg-danger'"
+                                      th:text="${v.available} ? 'Available' : 'Rented'"></span>
+                            </td>
+                            <td>
+                                <form th:if="${v.available}" th:action="@{'/vehicles/' + ${v.id} + '/delete'}" method="post"
+                                      onsubmit="return confirm('Remove this vehicle?')">
+                                    <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(vehicles)}"><td colspan="6" class="text-muted text-center py-4">No vehicles found</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white"><i class="bi bi-plus-circle me-2"></i>Add vehicle</div>
+                <div class="card-body">
+                    <form th:action="@{/vehicles}" method="post">
+                        <div class="mb-2"><label class="form-label">Make</label>
+                            <input class="form-control" name="make" required></div>
+                        <div class="mb-2"><label class="form-label">Model</label>
+                            <input class="form-control" name="model" required></div>
+                        <div class="mb-2"><label class="form-label">Type</label>
+                            <select class="form-select" name="type" required>
+                                <option value="CAR">Car</option><option value="BIKE">Bike</option>
+                                <option value="VAN">Van</option><option value="TRUCK">Truck</option>
+                            </select></div>
+                        <div class="mb-3"><label class="form-label">Daily rate</label>
+                            <input class="form-control" type="number" name="dailyRate" step="0.01" min="0.01" required></div>
+                        <button class="btn btn-primary w-100"><i class="bi bi-plus-lg me-1"></i>Add vehicle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: scripts}"></div>
+</body>
+</html>

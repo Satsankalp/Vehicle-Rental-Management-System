@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+
+<main class="container">
+    <h1 class="mb-4"><i class="bi bi-speedometer2 me-2"></i>Dashboard</h1>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-2">
+            <div class="card stat-card bg-primary text-white"><div class="card-body">
+                <h6 class="text-uppercase small">Vehicles</h6>
+                <h2 th:text="${vehicleCount}">0</h2>
+            </div></div>
+        </div>
+        <div class="col-md-2">
+            <div class="card stat-card bg-success text-white"><div class="card-body">
+                <h6 class="text-uppercase small">Available</h6>
+                <h2 th:text="${availableCount}">0</h2>
+            </div></div>
+        </div>
+        <div class="col-md-2">
+            <div class="card stat-card bg-info text-white"><div class="card-body">
+                <h6 class="text-uppercase small">Customers</h6>
+                <h2 th:text="${customerCount}">0</h2>
+            </div></div>
+        </div>
+        <div class="col-md-2">
+            <div class="card stat-card bg-warning text-dark"><div class="card-body">
+                <h6 class="text-uppercase small">Active</h6>
+                <h2 th:text="${activeCount}">0</h2>
+            </div></div>
+        </div>
+        <div class="col-md-2">
+            <div class="card stat-card bg-danger text-white"><div class="card-body">
+                <h6 class="text-uppercase small">Overdue</h6>
+                <h2 th:text="${overdueCount}">0</h2>
+            </div></div>
+        </div>
+        <div class="col-md-2">
+            <div class="card stat-card bg-dark text-white"><div class="card-body">
+                <h6 class="text-uppercase small">Revenue</h6>
+                <h3 th:text="${#numbers.formatDecimal(revenue, 1, 2)}">0.00</h3>
+            </div></div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white"><i class="bi bi-clock-history me-2"></i>Active rentals</div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead><tr><th>ID</th><th>Vehicle</th><th>Customer</th><th>Due</th></tr></thead>
+                        <tbody>
+                        <tr th:each="r : ${activeRentals}">
+                            <td th:text="${r.code}"></td>
+                            <td th:text="${r.vehicle.make} + ' ' + ${r.vehicle.model}"></td>
+                            <td th:text="${r.customer.name}"></td>
+                            <td><span class="badge" th:classappend="${r.dueDate.isBefore(#temporals.createToday())} ? 'bg-danger' : 'bg-secondary'"
+                                      th:text="${r.dueDate}"></span></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(activeRentals)}"><td colspan="4" class="text-muted text-center py-3">No active rentals</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white text-danger"><i class="bi bi-exclamation-octagon me-2"></i>Overdue rentals</div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead><tr><th>ID</th><th>Vehicle</th><th>Customer</th><th>Due date</th></tr></thead>
+                        <tbody>
+                        <tr th:each="r : ${overdue}">
+                            <td th:text="${r.code}"></td>
+                            <td th:text="${r.vehicle.make} + ' ' + ${r.vehicle.model}"></td>
+                            <td th:text="${r.customer.name}"></td>
+                            <td th:text="${r.dueDate}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(overdue)}"><td colspan="4" class="text-muted text-center py-3">Nothing overdue 🎉</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: scripts}"></div>
+</body>
+</html>

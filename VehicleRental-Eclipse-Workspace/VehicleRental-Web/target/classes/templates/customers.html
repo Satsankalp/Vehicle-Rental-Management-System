@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: head('Customers')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav}"></nav>
+<div th:replace="~{fragments :: alerts}"></div>
+
+<main class="container">
+    <h1 class="mb-4"><i class="bi bi-people me-2"></i>Customers</h1>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">Registered customers</div>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead><tr><th>ID</th><th>Name</th><th>Phone</th><th>Driving license</th></tr></thead>
+                        <tbody>
+                        <tr th:each="c : ${customers}">
+                            <td th:text="${c.code}"></td>
+                            <td th:text="${c.name}"></td>
+                            <td th:text="${c.phone}"></td>
+                            <td><code th:text="${c.licenseNo}"></code></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(customers)}"><td colspan="4" class="text-muted text-center py-4">No customers yet</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white"><i class="bi bi-person-plus me-2"></i>Register customer</div>
+                <div class="card-body">
+                    <form th:action="@{/customers}" method="post">
+                        <div class="mb-2"><label class="form-label">Name</label>
+                            <input class="form-control" name="name" required></div>
+                        <div class="mb-2"><label class="form-label">Phone</label>
+                            <input class="form-control" name="phone"></div>
+                        <div class="mb-3"><label class="form-label">Driving license no.</label>
+                            <input class="form-control" name="licenseNo" required></div>
+                        <button class="btn btn-primary w-100"><i class="bi bi-person-plus me-1"></i>Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{fragments :: scripts}"></div>
+</body>
+</html>
